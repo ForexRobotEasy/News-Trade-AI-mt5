@@ -1,0 +1,113 @@
+mql5
+//+------------------------------------------------------------------+
+//|                                        News Trade AI MT5         |
+//|                                   forexroboteasy.com             |
+//|                                   Developed by Forex Robot Easy Team|
+//+------------------------------------------------------------------+
+
+// Import necessary libraries
+#include <Trade\Trade.mqh>
+#include <Neuro\Neuro.mqh>
+#include <Risk\Risk.mqh>
+
+// Define global variables
+CTrade trade;
+CNeuro neuralNetwork;
+CRisk riskManagement;
+
+//+------------------------------------------------------------------+
+//|                                                                  |
+//|                        Expert Advisor Functions                   |
+//|                                                                  |
+//+------------------------------------------------------------------+
+
+// Initialization function
+int OnInit()
+{
+    // Enable WebRequest option
+    bool webRequestEnabled = true;
+    if (!WebRequestInitialize())
+        webRequestEnabled = false;
+    
+    return(INIT_SUCCEEDED);
+}
+
+// Deinitialization function
+void OnDeinit(const int reason)
+{
+    WebRequestDeinit();
+}
+
+// Start function
+void OnTick()
+{
+    // Get real-time news data
+    string newsData = GetNewsData();
+    
+    // Analyze news data using neural network
+    double analysisResult = neuralNetwork.Analyze(newsData);
+    
+    // Determine trading opportunity based on analysis result
+    if (analysisResult > 0.5)
+    {
+        // Execute buy trade
+        double lotSize = riskManagement.CalculateLotSize();
+        trade.Buy(lotSize);
+    }
+    else if (analysisResult < -0.5)
+    {
+        // Execute sell trade
+        double lotSize = riskManagement.CalculateLotSize();
+        trade.Sell(lotSize);
+    }
+}
+
+// Backtesting function
+void OnTester()
+{
+    // Load historical data
+    double[] historicalData = LoadHistoricalData();
+    
+    // Run backtesting using historical data
+    for (int i = 0; i < ArraySize(historicalData); i++)
+    {
+        // Analyze historical data using neural network
+        double analysisResult = neuralNetwork.Analyze(historicalData[i]);
+        
+        // Determine trading opportunity based on analysis result
+        if (analysisResult > 0.5)
+        {
+            // Execute buy trade
+            double lotSize = riskManagement.CalculateLotSize();
+            trade.Buy(lotSize);
+        }
+        else if (analysisResult < -0.5)
+        {
+            // Execute sell trade
+            double lotSize = riskManagement.CalculateLotSize();
+            trade.Sell(lotSize);
+        }
+    }
+}
+
+//+------------------------------------------------------------------+
+//|                                                                  |
+//|                          Helper Functions                         |
+//|                                                                  |
+//+------------------------------------------------------------------+
+
+// Function to get real-time news data
+string GetNewsData()
+{
+    // Implement code to fetch real-time news data
+    string newsData = 'Sample news data';
+    return newsData;
+}
+
+// Function to load historical data for backtesting
+double[] LoadHistoricalData()
+{
+    // Implement code to load historical data
+    double[] historicalData = {0.1, 0.2, -0.3, 0.4, -0.5};
+    return historicalData;
+}
